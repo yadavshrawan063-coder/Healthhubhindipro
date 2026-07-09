@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>BMI Calculator - Health Hub Hindi</title>
+  <meta name="description" content="Free BMI Calculator. Jano aapka vajan sahi hai ya nahi.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Segoe UI',Arial,sans-serif;background:#f5f7fa}
+    .container{max-width:600px;margin:0 auto;padding:20px}
+    .header{background:#2c5f2d;color:white;padding:20px;text-align:center}
+    .nav{background:white;padding:10px;text-align:center;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
+    .nav a{color:#2c5f2d;margin:0 10px;text-decoration:none;font-weight:600}
+    .card{background:white;padding:30px;border-radius:15px;margin:20px 0;box-shadow:0 3px 10px rgba(0,0,0,0.08)}
+    .input-group{margin:15px 0}
+    .input-group label{display:block;margin-bottom:5px;font-weight:600}
+    .input-group input{width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px}
+    .btn{width:100%;padding:15px;background:#2c5f2d;color:white;border:none;border-radius:8px;cursor:pointer;font-size:18px;font-weight:bold;margin-top:10px}
+    .btn:hover{background:#1e4220}
+    #result{margin-top:20px;padding:20px;border-radius:10px;text-align:center;font-size:18px;display:none}
+    .underweight{background:#fff3cd;color:#856404}
+    .normal{background:#d4edda;color:#155724}
+    .overweight{background:#f8d7da;color:#721c24}
+  </style>
+</head>
+<body>
+  <div class="header"><h1>⚖️ BMI Calculator</h1></div>
+  <div class="nav">
+    <a href="/">← Home</a>
+    <a href="/chatbot.html">AI Doctor</a>
+    <a href="/calculator.html">BMI Calculator</a>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h2 style="color:#2c5f2d;margin-bottom:20px;">Apna BMI Check Karo - 5 Second Me</h2>
+      <p style="margin-bottom:20px;">BMI se pata chalta hai ki aapka vajan height ke hisab se sahi hai ya nahi.</p>
+      
+      <div class="input-group">
+        <label>Apna Vajan (kg me):</label>
+        <input type="number" id="weight" placeholder="Jaise: 65">
+      </div>
+      
+      <div class="input-group">
+        <label>Apni Height (cm me):</label>
+        <input type="number" id="height" placeholder="Jaise: 170">
+      </div>
+      
+      <button class="btn" onclick="calculateBMI()">BMI Nikalo</button>
+      
+      <div id="result"></div>
+      
+      <p style="font-size:12px;color:#666;margin-top:20px;text-align:center;"><b>Note:</b> Ye calculator samanya jaankari ke liye hai. Sahi salah ke liye doctor se milein.</p>
+    </div>
+  </div>
+
+  <script>
+    function calculateBMI() {
+      const weight = parseFloat(document.getElementById('weight').value);
+      const height = parseFloat(document.getElementById('height').value) / 100;
+      
+      if(!weight || !height || weight <= 0 || height <= 0) {
+        alert('Bhai sahi vajan aur height daalo');
+        return;
+      }
+      
+      const bmi = (weight / (height * height)).toFixed(1);
+      const resultDiv = document.getElementById('result');
+      let category = '';
+      let msg = '';
+      let className = '';
+      
+      if(bmi < 18.5) {
+        category = 'Kam Vajan';
+        msg = 'Aapka vajan kam hai. Accha khana khao, doodh-dahi lo. Doctor se mil lo.';
+        className = 'underweight';
+      } else if(bmi >= 18.5 && bmi < 25) {
+        category = 'Bilkul Sahi';
+        msg = 'Shabash! Aapka vajan ekdum perfect hai. Aise hi fit raho.';
+        className = 'normal';
+      } else if(bmi >= 25 && bmi < 30) {
+        category = 'Thoda Zyada';
+        msg = 'Vajan thoda zyada hai. Roj 30 min walk karo, oily khana kam karo.';
+        className = 'overweight';
+      } else {
+        category = 'Bahut Zyada';
+        msg = 'Motapa zyada hai bhai. Doctor se milkar diet plan banao. Exercise shuru karo.';
+        className = 'overweight';
+      }
+      
+      resultDiv.className = className;
+      resultDiv.innerHTML = `<h3>Aapka BMI: ${bmi}</h3><p><b>Category: ${category}</b></p><p>${msg}</p>`;
+      resultDiv.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
