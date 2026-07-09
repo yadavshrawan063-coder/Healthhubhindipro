@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Doctor - Health Hub Hindi</title>
+  <meta name="description" content="AI Doctor se free me baat karo. Gharelu nuskhe pucho.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Segoe UI',Arial,sans-serif;background:#f5f7fa}
+    .container{max-width:800px;margin:0 auto;padding:20px}
+    .header{background:#2c5f2d;color:white;padding:20px;text-align:center}
+    .nav{background:white;padding:10px;text-align:center;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
+    .nav a{color:#2c5f2d;margin:0 10px;text-decoration:none;font-weight:600}
+    .chat-box{background:white;border-radius:15px;padding:20px;margin:20px 0;box-shadow:0 3px 10px rgba(0,0,0,0.08)}
+    #chat-messages{height:400px;overflow-y:auto;border:1px solid #e0e0e0;padding:15px;background:#fafafa;border-radius:10px;margin-bottom:15px}
+    .user-msg{background:#e3f2fd;padding:10px;border-radius:10px;margin:10px 0;text-align:right}
+    .ai-msg{background:#e8f5e9;padding:10px;border-radius:10px;margin:10px 0}
+    .input-area{display:flex;gap:10px}
+    #user-input{flex:1;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px}
+    #send-btn{padding:12px 20px;background:#2c5f2d;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:bold}
+    #send-btn:hover{background:#1e4220}
+    .disclaimer{font-size:12px;color:#666;text-align:center;margin-top:15px}
+  </style>
+</head>
+<body>
+  <div class="header"><h1>🤖 AI Doctor</h1></div>
+  <div class="nav">
+    <a href="/">← Home</a>
+    <a href="/chatbot.html">AI Doctor</a>
+    <a href="/calculator.html">BMI Calculator</a>
+  </div>
+
+  <div class="container">
+    <div class="chat-box">
+      <h2 style="color:#2c5f2d;margin-bottom:15px;">AI Doctor Se Salah Lo - Bilkul Free</h2>
+      <p style="margin-bottom:15px;">Apni problem Hinglish me likho. Jaise: "3 din se bukhar hai" ya "pet me gas ban rahi"</p>
+      
+      <div id="chat-messages">
+        <div class="ai-msg"><b>AI Doctor:</b> Namaste! Me aapka AI Doctor hun. Aapki kya takleef hai? Sirf gharelu nuskhe bataunga. 🙏</div>
+      </div>
+      
+      <div class="input-area">
+        <input type="text" id="user-input" placeholder="Yahan apni problem likho...">
+        <button id="send-btn" onclick="askDoctor()">Bhejo</button>
+      </div>
+      
+      <p class="disclaimer"><b>Zaroori:</b> Ye AI hai, MBBS doctor nahi. Emergency ya tez dard me turant 108 pe call karein ya Kondagaon Jila Hospital jayein.</p>
+    </div>
+  </div>
+
+  <script type="importmap">
+    { "imports": { "@google/generative-ai": "https://esm.run/@google/generative-ai" } }
+  </script>
+
+  <script type="module">
+    import { GoogleGenerativeAI } from "@google/generative-ai";
+    
+    // YAHAN APNI API KEY PASTE KARO
+    const API_KEY = "AQ.Ab8RN6I-eyLlyqF54q5sC62fgCdGa_5hAJyKlnVphO_G14eQnA;
+    
+    const genAI = new GoogleGenerativeAI(API_KEY);
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash",
+      systemInstruction: "Tu Health Hub Hindi ka AI Doctor hai. 10th ke student ne banaya hai. User se Hinglish me dosti se baat kar. Sirf gharelu nuskhe batana - adrak, tulsi, haldi, ajwain, jeera, heeng, shahad wale. Koi tablet/capsule/injection ka naam mat batana. Agar user bole 'khoon aa raha', 'saans nahi aa rahi', 'behosh', '101+ bukhar', 'tez dard', 'accident' to turant bol: 'Bhai ye emergency hai! Turant 108 pe call karo ya Kondagaon sarkari hospital bhago. Me AI hun, doctor nahi.' Har jawab 4-5 line ka ho, friendly tone me. Har jawab ke end me likh: 'Disclaimer: Ye doctor ki salah nahi hai.'"
+    });
+    
+    const chat = model.startChat();
+    
+    window.askDoctor = async function() {
+      const input = document.getElementById('user-input');
+      const question = input.value.trim();
+      if(!question) return;
+      
+      const chatBox = document.getElementById('chat-messages');
+      chatBox.innerHTML += `<div class="user-msg"><b>Aap:</b> ${question}</div>`;
+      chatBox.innerHTML += `<div class="ai-msg"><b>AI Doctor:</b> <i>Typing...</i></div>`;
+      input.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+      
+      try {
+        const result = await chat.sendMessage(question);
+        const response = await result.response;
+        const text = response.text();
+        chatBox.lastElementChild.innerHTML = `<b>AI Doctor:</b> ${text}`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      } catch(err) {
+        chatBox.lastElementChild.innerHTML = `<b>AI Doctor:</b> Network problem hai bhai. Thodi der baad try karo ya doctor ko dikha lo.`;
+      }
+    }
+    
+    document.getElementById('user-input').addEventListener('keypress', function(e) {
+      if(e.key === 'Enter') askDoctor();
+    });
+  </script>
+</body>
+</html>
